@@ -1,25 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from 'react'
+import './App.scss'
 
-function App() {
+function App () {
+  const [dishes, setDishes] = useState({})
+  const [reFetch, setReFetch] = useState(false)
+  useEffect(() => {
+    console.log('componente renderizado')
+    let data = fetch(
+      'https://react-crud-15g-default-rtdb.firebaseio.com/dishes.json'
+    ).then(response => {
+      response.json().then(json => {
+        setDishes(json)
+      })
+    })
+  }, [])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      {Object.keys(dishes).map(dish => {
+        const { name, region, type, picture } = dishes[dish]
+        return (
+          <div className='card border rounded dish-card'>
+            <img src={picture} alt='' />
+            <div className='card-body'>
+              <h2>Nombre: {name}</h2>
+              <h3>Región: {region}</h3>
+              <h4>Tipo: {type}</h4>
+            </div>
+          </div>
+        )
+      })}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
